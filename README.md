@@ -1,6 +1,6 @@
 # FanFocusAI: Sports Celebrity Image Classification System
 
-🟢 **Live Demo:** [https://sport-person-classifier.onrender.com](https://sport-person-classifier.onrender.com)
+🟢 **Live Demo:** [https://fanfocusai.onrender.com](https://fanfocusai.onrender.com)
 
 FanFocusAI is an enterprise-grade, end-to-end Machine Learning pipeline and Web Application designed to classify famous sports celebrities from images using Computer Vision and Support Vector Machines.
 
