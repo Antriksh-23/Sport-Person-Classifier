@@ -1,0 +1,14 @@
+# Datasets and Images
+dataset/
+artifacts/
+temp_predict_img.png
+
+# Python files
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environments
+.env
+venv/
+env/

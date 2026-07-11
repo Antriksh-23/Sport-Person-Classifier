@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FanFocus | Sports Celebrity Classifier</title>
+    <meta name="description" content="AI-powered sports celebrity recognition.">
+    
+    <!-- Google Fonts: Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-mesh"></div>
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <div class="logo">
+                <i data-lucide="scan-face" class="logo-icon"></i>
+                <span>FanFocus<span class="text-gradient">AI</span></span>
+            </div>
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Menu">
+                <i data-lucide="menu"></i>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="#demo">Scanner</a>
+                <a href="#performance">Performance</a>
+                <a href="#athletes">Athletes</a>
+                <a href="https://github.com" target="_blank" class="nav-btn"><i data-lucide="github"></i> View Source</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero observe-me">
+            <div class="hero-badge">v2.0 Model Live</div>
+            <h1 class="hero-title">Recognize Sports <br> Legends with <span class="text-gradient">AI</span></h1>
+            <p class="hero-subtitle">Upload an image or use your webcam to instantly identify world-class athletes using our state-of-the-art Wavelet & SVM pipeline.</p>
+            <div class="hero-cta">
+                <a href="#demo" class="btn-primary magnetic">
+                    Try the Scanner <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Demo Section (Upload / Scanner) -->
+        <section id="demo" class="demo-section observe-me">
+            <div class="demo-container glass-card">
+                
+                <!-- Toggle Mode -->
+                <div class="mode-toggle">
+                    <button id="mode-upload" class="toggle-btn active"><i data-lucide="upload-cloud"></i> Upload Image</button>
+                    <button id="mode-webcam" class="toggle-btn"><i data-lucide="camera"></i> Webcam Scanner</button>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-area">
+                    
+                    <!-- Upload Mode -->
+                    <div id="upload-zone" class="upload-zone">
+                        <div class="upload-content">
+                            <div class="icon-ring">
+                                <i data-lucide="image-plus" class="upload-icon"></i>
+                            </div>
+                            <h3>Drag & Drop</h3>
+                            <p>or click to browse your files (JPEG, PNG, WEBP)</p>
+                            <input type="file" id="file-upload" accept="image/jpeg, image/png, image/webp" hidden>
+                        </div>
+                    </div>
+
+                    <!-- Webcam Mode (Hidden by default) -->
+                    <div id="webcam-zone" class="webcam-zone hidden">
+                        <div class="video-container">
+                            <video id="webcam-video" autoplay playsinline></video>
+                            <div class="scanner-hud">
+                                <div class="corner tl"></div>
+                                <div class="corner tr"></div>
+                                <div class="corner bl"></div>
+                                <div class="corner br"></div>
+                                <div class="hud-center"><i data-lucide="focus"></i></div>
+                            </div>
+                        </div>
+                        <button id="capture-btn" class="btn-secondary magnetic"><i data-lucide="aperture"></i> Capture Frame</button>
+                        <canvas id="webcam-canvas" hidden></canvas>
+                    </div>
+
+                    <!-- Image Preview / Scanning State -->
+                    <div id="preview-zone" class="preview-zone hidden">
+                        <div class="preview-wrapper">
+                            <img id="image-preview" alt="Preview">
+                            <div id="laser-scanner" class="laser-scanner hidden"></div>
+                        </div>
+                        <div id="processing-state" class="processing-state hidden">
+                            <i data-lucide="cpu" class="spin-icon"></i>
+                            <span>Analyzing facial topography...</span>
+                        </div>
+                        <div class="preview-controls">
+                            <button id="classify-btn" class="btn-primary magnetic">Analyze Face <i data-lucide="zap"></i></button>
+                            <button id="reset-btn" class="btn-ghost">Discard</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="error-message hidden">
+                    <i data-lucide="alert-triangle"></i>
+                    <span id="error-text">An error occurred.</span>
+                </div>
+
+                <!-- Result Area (Hidden by default) -->
+                <div id="result-zone" class="result-zone hidden">
+                    <div class="result-header">
+                        <div class="result-badge success">Match Found</div>
+                        <div class="timestamp" id="timestamp">Processed in 0.4s</div>
+                    </div>
+                    
+                    <h2 class="predicted-name text-gradient" id="predicted-athlete">Lionel Messi</h2>
+                    
+                    <div class="confidence-box">
+                        <div class="conf-header">
+                            <span>AI Confidence</span>
+                            <span class="conf-value" id="confidence-score">94.2%</span>
+                        </div>
+                        <div class="conf-bar-bg">
+                            <div class="conf-bar-fill" id="confidence-bar"></div>
+                        </div>
+                    </div>
+
+                    <div class="prob-grid-wrapper">
+                        <h3>Probability Matrix</h3>
+                        <div class="prob-grid" id="probability-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Section -->
+        <section id="performance" class="performance-section observe-me">
+            <div class="section-header">
+                <h2>Model Architecture</h2>
+                <p>Built with a Wavelet Transform feature extractor and an optimized SVM classifier.</p>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card glass-card tilt-card">
+                    <i data-lucide="target" class="metric-icon blue"></i>
+                    <h4>Accuracy</h4>
+                    <div class="metric-value">76.2%</div>
+                    <p>On unseen test data</p>
+                </div>
+                <div class="metric-card glass-card tilt-card">
+                    <i data-lucide="crosshair" class="metric-icon purple"></i>
+                    <h4>Precision</h4>
+                    <div class="metric-value">76.7%</div>
+                    <p>Weighted average</p>
+                </div>
+                <div class="metric-card glass-card tilt-card">
+                    <i data-lucide="database" class="metric-icon cyan"></i>
+                    <h4>Training Data</h4>
+                    <div class="metric-value">1,000+</div>
+                    <p>Augmented samples</p>
+                </div>
+                <div class="metric-card glass-card tilt-card">
+                    <i data-lucide="activity" class="metric-icon pink"></i>
+                    <h4>Algorithm</h4>
+                    <div class="metric-value text-small">Linear SVM</div>
+                    <p>GridSearch optimized</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supported Athletes Section -->
+        <section id="athletes" class="athletes-section observe-me">
+            <div class="section-header">
+                <h2>Supported Athletes</h2>
+                <p>The AI is currently trained to recognize these 10 global sports icons.</p>
+            </div>
+            <div class="athlete-grid">
+                <!-- Athlete Cards (Populated by JS or Static) -->
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Lionel Messi</div><div class="ath-sport">Football</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Cristiano Ronaldo</div><div class="ath-sport">Football</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Roger Federer</div><div class="ath-sport">Tennis</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Maria Sharapova</div><div class="ath-sport">Tennis</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Muhammad Ali</div><div class="ath-sport">Boxing</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Michael Jordan</div><div class="ath-sport">Basketball</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">MS Dhoni</div><div class="ath-sport">Cricket</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Virat Kohli</div><div class="ath-sport">Cricket</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Rohit Sharma</div><div class="ath-sport">Cricket</div></div>
+                <div class="athlete-card glass-card tilt-card"><div class="ath-name">Unknown Person</div><div class="ath-sport">Safety Net</div></div>
+            </div>
+        </section>
+        
+        <!-- Tech Stack -->
+        <section class="tech-stack observe-me">
+            <p>Powered by open-source technologies</p>
+            <div class="tech-logos">
+                <span>Python</span>
+                <span class="dot">•</span>
+                <span>OpenCV</span>
+                <span class="dot">•</span>
+                <span>Scikit-Learn</span>
+                <span class="dot">•</span>
+                <span>Flask</span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content glass-nav">
+            <p>&copy; 2026 FanFocus AI Systems. Designed for the future.</p>
+        </div>
+    </footer>
+
+    <script src="/static/script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
